@@ -3,158 +3,237 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Best STT for AI Voice Agents on the Telephony Layer</title>
-<meta name="description" content="A controlled comparison of five streaming speech-to-text engines (Deepgram, AssemblyAI, Speechmatics, ElevenLabs Scribe, Cartesia) for AI voice agents over real telephony.">
+<title>The Best Speech-to-Text Engine for AI Voice Agents on the Telephony Layer</title>
+<meta name="description" content="A controlled comparison of five streaming speech-to-text engines for AI voice agents over real telephony. Recommendation: Deepgram STT + ElevenLabs TTS.">
 <meta property="og:title" content="The Best STT for AI Voice Agents on the Telephony Layer">
 <meta property="og:description" content="Speed does not predict accuracy. A controlled five-engine STT benchmark over real PSTN telephony.">
-<meta property="og:image" content="figures/fig-scatter.png">
+<meta property="og:image" content="figures/fig3.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#1a2230; --muted:#5b6573; --line:#e6e9ef; --bg:#ffffff; --soft:#f6f8fb;
-    --accent:#1F77B4; --good:#2CA02C; --bad:#D62728; --gold:#b8860b;
-  }
+  :root{ --ink:#1b1b1b; --muted:#555; --rule:#cfcfcf; --link:#7b1d1d; --accent:#13315c; --soft:#f4f1ea; }
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
-    color:var(--ink);line-height:1.62;background:var(--bg);-webkit-font-smoothing:antialiased}
-  a{color:var(--accent);text-decoration:none}
+  html{font-size:17px}
+  body{margin:0;background:#e9e7e2;color:var(--ink);
+    font-family:"Source Serif 4",Georgia,Cambria,"Times New Roman",serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--link);text-decoration:none}
   a:hover{text-decoration:underline}
-  .wrap{max-width:860px;margin:0 auto;padding:0 22px}
-  /* hero */
-  header{background:linear-gradient(160deg,#10243f 0%,#1b3a5e 55%,#22507e 100%);color:#fff;padding:64px 0 52px;text-align:center}
-  header h1{font-size:2.05rem;line-height:1.22;margin:0 0 .5rem;font-weight:800;letter-spacing:-.5px}
-  header .sub{font-size:1.06rem;opacity:.9;margin:0 auto;max-width:640px}
-  header .authors{margin-top:1.2rem;font-size:.97rem;opacity:.85}
-  .btns{margin-top:1.6rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#13314f;font-weight:650;
-    padding:11px 20px;border-radius:999px;font-size:.95rem;border:1px solid transparent;transition:transform .12s}
-  .btn:hover{text-decoration:none;transform:translateY(-1px)}
-  .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
-  /* sections */
-  section{padding:42px 0;border-bottom:1px solid var(--line)}
-  h2{font-size:1.5rem;font-weight:750;margin:0 0 .9rem;letter-spacing:-.3px}
-  h3{font-size:1.05rem;margin:1.4rem 0 .3rem}
-  p{margin:.7rem 0}
-  .lead{font-size:1.08rem;color:#2b3b4a}
-  .rec{background:linear-gradient(135deg,#f0f7ff,#eefbf1);border:1px solid #d6e7d9;border-radius:16px;
-    padding:26px 28px;text-align:center;margin:8px 0}
-  .rec .tag{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
-  .rec .pick{font-size:1.5rem;font-weight:800;margin:.35rem 0 .6rem;color:#13314f}
-  .rec p{margin:.4rem auto 0;max-width:640px;color:var(--muted);font-size:.98rem}
-  table{width:100%;border-collapse:collapse;margin:1.1rem 0;font-size:.93rem}
-  th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:right}
-  th:first-child,td:first-child{text-align:left}
-  thead th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--line)}
-  tbody tr.win{background:#f3f9f3}
-  tbody tr.out{color:#9aa3af}
-  .verdict{font-weight:650}
-  figure{margin:1.5rem 0;text-align:center}
-  figure img{max-width:100%;border:1px solid var(--line);border-radius:12px}
-  figcaption{font-size:.86rem;color:var(--muted);margin-top:.5rem;max-width:680px;margin-left:auto;margin-right:auto}
-  .grid2{display:grid;grid-template-columns:1fr;gap:8px}
-  ol.thesis{padding-left:1.1rem}
-  ol.thesis li{margin:.5rem 0}
-  .note{background:var(--soft);border-left:3px solid #cdd6e2;padding:14px 18px;border-radius:8px;font-size:.93rem;color:#44505f}
-  pre{background:#0f1b2d;color:#e7eefc;padding:16px 18px;border-radius:10px;overflow:auto;font-size:.82rem;line-height:1.5}
-  footer{padding:34px 0;text-align:center;color:var(--muted);font-size:.86rem}
-  .engines{font-size:.86rem;color:var(--muted)}
-  @media(min-width:680px){header h1{font-size:2.5rem}}
+  .sheet{max-width:1000px;margin:26px auto;background:#fff;padding:54px 60px 46px;
+    box-shadow:0 1px 4px rgba(0,0,0,.12),0 10px 40px rgba(0,0,0,.08)}
+  /* masthead */
+  .masthead{text-align:center;border-bottom:none;padding-bottom:6px}
+  h1{font-size:1.74rem;line-height:1.25;font-weight:700;margin:.1rem 0 .2rem}
+  .subtitle{font-size:1.06rem;color:#333;font-style:italic;margin:.2rem 0 1.1rem}
+  .authors{font-size:1.12rem;margin:.4rem 0 .1rem}
+  .authors b{font-weight:600}
+  .affil{font-size:.95rem;color:#333;margin:.15rem 0}
+  .emails{font-size:.9rem;color:var(--muted);margin:.1rem 0 .2rem}
+  .meta{font-size:.86rem;color:var(--muted);margin:.5rem 0 .2rem}
+  .links{margin:1rem 0 .2rem}
+  .links a{display:inline-block;border:1px solid #bbb;border-radius:4px;padding:6px 15px;margin:0 5px;
+    font-size:.9rem;color:var(--accent);background:#fafafa}
+  .links a:hover{background:#f0f0f0;text-decoration:none}
+  /* abstract */
+  .abstract{margin:1.6rem auto 0;max-width:760px;font-size:.96rem;text-align:justify;hyphens:auto}
+  .abstract h2{text-align:center;font-size:1rem;font-variant:small-caps;letter-spacing:.04em;margin:0 0 .5rem;font-weight:700}
+  .abstract p{margin:.5rem 0}
+  hr.rule{border:none;border-top:1px solid var(--rule);margin:1.4rem 0}
+  /* two-column body */
+  .body{column-count:2;column-gap:2.4em;text-align:justify;hyphens:auto;font-size:.92rem;margin-top:.4rem}
+  .body p{margin:0 0 .62rem}
+  .body h2{font-size:1.02rem;font-weight:700;margin:.9rem 0 .35rem;break-after:avoid}
+  .body h3{font-size:.96rem;font-weight:700;font-style:italic;margin:.7rem 0 .25rem}
+  .body p+p{text-indent:1.1em}
+  .body ul{margin:.2rem 0 .6rem 1.1em;padding:0}
+  .body li{margin:.18rem 0}
+  /* spanning floats */
+  figure,table.tbl{break-inside:avoid}
+  figure.span,.tbl.span,.callout{column-span:all;-webkit-column-span:all}
+  figure{margin:.7rem 0 1rem;text-align:center}
+  figure img{max-width:100%;border:1px solid #e3e3e3}
+  figure.span img{max-width:74%}
+  figcaption{font-size:.82rem;color:#333;margin-top:.4rem;text-align:left;max-width:88%;margin-left:auto;margin-right:auto}
+  figcaption b{font-weight:700}
+  /* tables */
+  table.tbl{border-collapse:collapse;width:100%;font-size:.82rem;margin:.5rem 0 1rem}
+  table.tbl.span{width:88%;margin-left:auto;margin-right:auto}
+  .tbl caption{caption-side:top;font-size:.82rem;text-align:left;color:#333;margin-bottom:.35rem}
+  .tbl caption b{font-weight:700}
+  .tbl th,.tbl td{padding:5px 9px;text-align:right;border-bottom:1px solid #e0e0e0}
+  .tbl th:first-child,.tbl td:first-child{text-align:left}
+  .tbl thead th{border-top:1.5px solid #555;border-bottom:1.5px solid #555;font-weight:700}
+  .tbl tbody tr:last-child td{border-bottom:1.5px solid #555}
+  .tbl tr.win td{background:#f3f7f2;font-weight:600}
+  .tbl tr.out td{color:#999}
+  /* recommendation callout */
+  .callout{background:var(--soft);border:1px solid #ddd6c6;border-left:4px solid #b08d3a;
+    padding:14px 20px;margin:.6rem auto 1.1rem;border-radius:3px;text-align:center}
+  .callout .lab{font-size:.74rem;font-variant:small-caps;letter-spacing:.1em;color:#8a6d24;font-weight:700}
+  .callout .pick{font-size:1.18rem;font-weight:700;margin:.2rem 0 .35rem;color:#13315c}
+  .callout p{font-size:.86rem;color:#444;margin:0 auto;max-width:640px;text-align:justify}
+  .refs{font-size:.82rem;margin-top:.4rem}
+  .refs ol{padding-left:1.3em;margin:.3rem 0}
+  .refs li{margin:.25rem 0}
+  pre.cite{column-span:all;background:#f7f7f4;border:1px solid #e3e0d6;border-radius:4px;
+    padding:13px 16px;font-size:.74rem;overflow:auto;font-family:ui-monospace,Menlo,Consolas,monospace;line-height:1.45;color:#333}
+  footer{max-width:1000px;margin:0 auto 40px;padding:0 60px;color:#777;font-size:.8rem;text-align:center}
+  @media (max-width:760px){
+    .sheet{padding:30px 22px;margin:10px}
+    .body{column-count:1}
+    figure.span img,.tbl.span{max-width:100%;width:100%}
+    h1{font-size:1.4rem}
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>The Best Speech-to-Text Engine for<br>AI Voice Agents on the Telephony Layer</h1>
-    <p class="sub">A controlled comparison of five streaming STT engines in one identical PSTN pipeline.</p>
-    <div class="authors">MM Intelligence · Voice Research</div>
-    <div class="btns">
-      <a class="btn" href="telephony-stt-benchmark.pdf">📄 Read the Paper (PDF)</a>
-      <a class="btn ghost" href="https://github.com/therealmazin/telephony-stt-benchmark">⌥ GitHub Repository</a>
+<div class="sheet">
+
+  <div class="masthead">
+    <h1>The Best Speech-to-Text Engine for AI Voice Agents<br>on the Telephony Layer</h1>
+    <div class="subtitle">A Controlled Comparison of Five Streaming STT Engines in One Identical PSTN Pipeline</div>
+    <div class="authors"><b>Mazin Salim</b>&nbsp;&nbsp;&nbsp; <b>Mishahal Palakuniyil</b></div>
+    <div class="affil">MM Intelligence</div>
+    <div class="emails"><tt>mazin@mmintelligence.ai</tt> &nbsp;&bull;&nbsp; <tt>mishal@mmintelligence.ai</tt></div>
+    <div class="meta">June 2026 &nbsp;&bull;&nbsp; Technical Report</div>
+    <div class="links">
+      <a href="telephony-stt-benchmark.pdf">📄 Full Paper (PDF)</a>
+      <a href="https://github.com/therealmazin/telephony-stt-benchmark">⌨ Code &amp; Data</a>
     </div>
   </div>
-</header>
 
-<section>
-  <div class="wrap">
+  <div class="abstract">
     <h2>Abstract</h2>
-    <p class="lead">On the telephony layer, the latency of a speech-to-text engine is a <em>necessary but insufficient</em> property. What actually matters for an AI voice agent is <strong>accuracy and reliability under real PSTN conditions</strong>.</p>
-    <p>We swapped five streaming STT engines into one identical Pipecat telephony pipeline — holding turn-taking, the language model, the text-to-speech, and the 8&nbsp;kHz audio path constant — and placed roughly ten live Twilio phone calls through each (about fifty total), every call requiring the assistant to capture a spoken <strong>name</strong> and a ten-digit <strong>callback number</strong>. We find that <strong>speed does not predict accuracy</strong>: the fastest-median engine was the <em>least</em> reliable. We also find that one does <strong>not</strong> have to trade speed for accuracy.</p>
+    <p>On the telephony layer, the latency of a speech-to-text (STT) engine is a <i>necessary but insufficient</i> property: the objective that actually matters for an AI voice agent is <b>accuracy and reliability under real public switched telephone network (PSTN) conditions</b>. We swapped five streaming STT engines into one identical Pipecat telephony pipeline&mdash;holding turn-taking, the language model, the text-to-speech, and the 8&nbsp;kHz audio path constant&mdash;and placed roughly ten live Twilio phone calls through each (about fifty total), each call requiring the assistant to capture a spoken name and a ten-digit callback number. We find that speed does not predict accuracy: the fastest-median engine was the <i>least</i> reliable, hallucinating invented tokens and exhibiting a broken two-second latency tail. We also find that one does <b>not</b> have to trade speed for accuracy. We recommend <b>Deepgram Nova-3 for STT paired with ElevenLabs Flash v2.5 for TTS</b>: Deepgram ties for the best first-try number accuracy (70%) with zero permanent number losses and zero hallucination, at roughly half the latency of the slowest accurate engine, with no critical reliability weakness.</p>
   </div>
-</section>
 
-<section>
-  <div class="wrap">
-    <h2>Recommendation</h2>
-    <div class="rec">
-      <span class="tag">🏆 Primary recommendation</span>
-      <div class="pick">Deepgram Nova-3 (STT) + ElevenLabs Flash v2.5 (TTS)</div>
-      <p>Deepgram's STT ties for the best first-try number accuracy (70%) with zero permanent number losses and zero hallucination, yet runs at roughly half the latency of the slowest accurate engine. We pair it with ElevenLabs for synthesis because Deepgram's own <em>Aura</em> text-to-speech — not its STT — interrupted and cut off speech on the line.</p>
-    </div>
-  </div>
-</section>
+  <hr class="rule">
 
-<section>
-  <div class="wrap">
-    <h2>Results at a glance</h2>
-    <table>
-      <thead><tr><th>STT engine</th><th>Latency p50</th><th>Numbers (1st-try)</th><th>"Mazin" exact</th><th>Halluc.</th><th>Verdict</th></tr></thead>
+  <div class="body">
+
+    <h2>1.&nbsp;&nbsp;Introduction</h2>
+    <p>Telephony is the hardest deployment surface for automatic speech recognition, and an AI voice agent that answers phone calls lives or dies on that surface. Four properties make it hard.</p>
+    <p><b>Narrowband audio.</b> The PSTN delivers 8&nbsp;kHz mu-law audio; half the spectral information that wideband models are trained on is simply absent. No amount of upsampling restores the missing high frequencies. An engine excellent on clean 16&nbsp;kHz microphone audio can degrade sharply on a real phone call.</p>
+    <p><b>Names and numbers are the hard tokens.</b> A receptionist's core job is to capture <i>entities</i>: a caller's name and a callback number. These have the least linguistic redundancy. A language model can repair a garbled common word from context; it cannot infer that &ldquo;016&rdquo; was meant when the line delivered &ldquo;015.&rdquo; Proper nouns are worse: an uncommon name has essentially no language-model prior, so the transcript is whatever the acoustic model emits.</p>
+    <p><b>Latency is felt every turn.</b> In a spoken conversation, every turn pays the STT's time-to-first-token (TTFB). Unlike batch transcription, conversational latency is experienced repeatedly and directly as the gap before the agent responds&mdash;making TTFB a first-class metric, but not the only one.</p>
+    <p><b>Hallucination is a safety issue.</b> Some streaming models, handed unparseable narrowband audio, do not stay silent: they invent plausible tokens. For a voice agent acting on what it &ldquo;heard,&rdquo; a fabricated digit run is a correctness and trust failure&mdash;the agent confidently stores something the caller never said.</p>
+    <p>This paper argues a single thesis: <b>on the telephony layer, optimize for accuracy and reliability, not raw speed; and you do not have to trade one for the other.</b> Reliability also spans the whole stack, not the STT alone&mdash;the agent must not cut the caller off, a turn-taking property that can live in the text-to-speech layer as much as anywhere else.</p>
+
+    <h2>2.&nbsp;&nbsp;Experimental Setup</h2>
+    <p>We built one Pipecat telephony pipeline and changed exactly one component&mdash;the STT engine&mdash;across all conditions. Held fixed: turn-taking (a local end-of-turn model over Silero VAD), the LLM (Claude Haiku 4.5), the TTS (ElevenLabs Flash v2.5), and the 8&nbsp;kHz&nbsp;&rarr;&nbsp;16&nbsp;kHz audio path. No vocabulary seeding was applied to any engine.</p>
+
+    <table class="tbl span">
+      <caption><b>Table 1.</b> The five streaming STT engines compared. Only the STT was swapped; every other stage was held identical.</caption>
+      <thead><tr><th>Engine</th><th>Model</th><th>Turn handling</th></tr></thead>
       <tbody>
-        <tr class="win"><td><strong>Deepgram Nova-3</strong></td><td>0.374 s</td><td><strong>70%</strong></td><td>1</td><td>0</td><td class="verdict" style="color:var(--good)">🏆 Recommended</td></tr>
-        <tr><td>AssemblyAI Universal-3 Pro</td><td>0.357 s</td><td>40%</td><td><strong>3</strong></td><td>0</td><td class="verdict">Runner-up · names</td></tr>
-        <tr><td>Speechmatics Ursa (Enhanced)</td><td>0.777 s</td><td><strong>70%</strong></td><td>0</td><td>0</td><td class="verdict">Accuracy alt · ~2× slower</td></tr>
-        <tr><td>ElevenLabs Scribe v2</td><td>0.345 s</td><td>50%</td><td>1</td><td>0</td><td class="verdict">Middle</td></tr>
-        <tr class="out"><td>Cartesia Ink-Whisper</td><td>0.296 s</td><td>20%</td><td>1</td><td><strong style="color:var(--bad)">9</strong></td><td class="verdict" style="color:var(--bad)">Disqualified</td></tr>
+        <tr><td>Deepgram</td><td>Nova-3</td><td>external (our VAD)</td></tr>
+        <tr><td>AssemblyAI</td><td>Universal-3 Pro</td><td>external (our VAD)</td></tr>
+        <tr><td>Speechmatics</td><td>Ursa (Enhanced)</td><td>external (our VAD)</td></tr>
+        <tr><td>ElevenLabs</td><td>Scribe v2 Realtime</td><td>external (our VAD)</td></tr>
+        <tr><td>Cartesia</td><td>Ink-Whisper</td><td>external (our VAD)</td></tr>
       </tbody>
     </table>
 
-    <figure>
-      <img src="figures/fig-scatter.png" alt="Scatter: STT latency vs first-try number accuracy">
-      <figcaption>The fastest engine (Cartesia) is the least accurate; the slowest (Speechmatics) is accurate but pays ~2× latency. Deepgram occupies the sweet spot — fast <em>and</em> accurate.</figcaption>
-    </figure>
-    <div class="grid2">
-      <figure><img src="figures/fig-latency.png" alt="STT latency p50 and p95 per engine"><figcaption>STT latency: median vs worst-case (p95). Cartesia's median is fastest, but its worst case is a broken 2-second tail.</figcaption></figure>
-      <figure><img src="figures/fig-accuracy.png" alt="Number accuracy and hard-name accuracy per engine"><figcaption>First-try number accuracy (left) and exact hard-name captures plus hallucination count (right).</figcaption></figure>
+    <p>Latency was instrumented per service (time-to-first-token). Number accuracy was scored from the assistant's spoken <i>read-back</i> of the caller's number: the speaker said the same ten-digit number clearly on essentially every call, the agent confirmed it (&ldquo;that's 555-016-2049, correct?&rdquo;), and we scored the first read-back as correct, fixed-on-retry, or never-correct. A ground-truth check confirmed each batch ran its labelled engine. The sample is one speaker, roughly ten live Twilio calls per engine.</p>
+
+    <h2>3.&nbsp;&nbsp;Results</h2>
+    <h3>3.1&nbsp;&nbsp;Latency</h3>
+    <p>The four fastest engines sit within a narrow band on median TTFB; Speechmatics runs roughly twice as slow. Cartesia owns the fastest median yet a broken two-second worst case (Fig.&nbsp;1, Fig.&nbsp;2).</p>
+
+    <figure class="span"><img src="figures/fig1.png" alt="STT latency p50 and p95 per engine">
+      <figcaption><b>Figure 1.</b> STT time-to-first-token, median (p50) and worst-case (p95). Cartesia's median is fastest, but its p95 is a 2&nbsp;s tail.</figcaption></figure>
+    <figure class="span"><img src="figures/fig2.png" alt="Stacked total turn latency">
+      <figcaption><b>Figure 2.</b> Total turn latency (STT&nbsp;+&nbsp;LLM&nbsp;+&nbsp;TTS medians). The STT is a minority of the turn, and the fast engines are nearly indistinguishable end-to-end.</figcaption></figure>
+
+    <h3>3.2&nbsp;&nbsp;Number accuracy</h3>
+    <p>Deepgram and Speechmatics tie for the best first-try number accuracy (70%); both never permanently lost a number. AssemblyAI and Cartesia each stored one permanently-wrong number. The read-back-and-confirm loop lifts every engine to 90&ndash;100% eventual accuracy regardless of first-try rate.</p>
+
+    <table class="tbl span">
+      <caption><b>Table 2.</b> Read-back accuracy for the callback number. &ldquo;Never&rdquo; = a permanently-wrong stored number, the worst outcome.</caption>
+      <thead><tr><th>Engine</th><th>First-try</th><th>Fixed</th><th>Never</th><th>Eventual</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>Deepgram</td><td>70%</td><td>3</td><td>0</td><td>100%</td></tr>
+        <tr class="win"><td>Speechmatics</td><td>70%</td><td>3</td><td>0</td><td>100%</td></tr>
+        <tr><td>Scribe</td><td>50%</td><td>5</td><td>0</td><td>100%</td></tr>
+        <tr><td>AssemblyAI</td><td>40%</td><td>5</td><td>1</td><td>90%</td></tr>
+        <tr class="out"><td>Cartesia</td><td>20%</td><td>7</td><td>1</td><td>90%</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="span"><img src="figures/fig4.png" alt="Number accuracy per engine">
+      <figcaption><b>Figure 4.</b> First-try number accuracy per engine. Deepgram and Speechmatics lead; Cartesia trails.</figcaption></figure>
+
+    <h3>3.3&nbsp;&nbsp;Name accuracy</h3>
+    <p>AssemblyAI is the clear leader on the hard proper noun, capturing the difficult name exactly three times; Scribe, Cartesia, and Deepgram manage one each; Speechmatics never captured it exactly. This is a near-mirror image of the number ordering.</p>
+
+    <table class="tbl span">
+      <caption><b>Table 3.</b> Exact captures of the hard name (single speaker, ~10 calls each).</caption>
+      <thead><tr><th>Engine</th><th>Exact &ldquo;hard name&rdquo;</th></tr></thead>
+      <tbody>
+        <tr><td>AssemblyAI</td><td>3</td></tr>
+        <tr><td>Deepgram</td><td>1</td></tr>
+        <tr><td>Scribe</td><td>1</td></tr>
+        <tr><td>Cartesia</td><td>1</td></tr>
+        <tr><td>Speechmatics</td><td>0</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.4&nbsp;&nbsp;Hallucination &amp; reliability</h3>
+    <p>Only Cartesia hallucinated&mdash;nine invented tokens and repeated-digit runs during fumbled numbers&mdash;while every other engine produced zero. Combined with its broken latency tail, this disqualifies it for telephony despite the fastest median (Fig.&nbsp;5).</p>
+
+    <figure class="span"><img src="figures/fig5.png" alt="Reliability failure modes per engine">
+      <figcaption><b>Figure 5.</b> Reliability failure modes: exact hard-name captures, permanent number losses, and hallucinated tokens. Cartesia's hallucination spike is the decisive mark against it.</figcaption></figure>
+
+    <p>The thesis figure (Fig.&nbsp;3) plots latency against accuracy directly: the fastest engine (Cartesia) is the least accurate, the slowest (Speechmatics) is accurate but pays roughly double the latency, and Deepgram occupies the sweet spot&mdash;fast <i>and</i> accurate.</p>
+
+    <figure class="span"><img src="figures/fig3.png" alt="Latency vs first-try number accuracy">
+      <figcaption><b>Figure 3.</b> Speed does not predict accuracy. STT median latency (x) against first-try number accuracy (y). There is no positive correlation; the fastest engine is the least accurate.</figcaption></figure>
+
+    <h2>4.&nbsp;&nbsp;Discussion</h2>
+    <p><b>Speed&nbsp;&ne;&nbsp;accuracy.</b> Cartesia had the fastest median yet was the least reliable: nine hallucinated tokens and a two-second p95 tail. Raw speed tells you nothing about correctness.</p>
+    <p><b>You do not have to trade speed for accuracy.</b> Deepgram matches the most accurate engine on numbers (70%) while running twice as fast as Speechmatics, so the slow engine's latency buys no accuracy advantage.</p>
+    <p><b>Reliability spans the whole stack.</b> A voice agent must never hallucinate, must capture names and numbers on a noisy 8&nbsp;kHz line, and must not cut the caller off. That last property&mdash;turn-taking&mdash;is not purely an STT concern: in our deployment, Deepgram's own <i>Aura</i> text-to-speech, not its STT, interrupted and cut off speech on the line, which is why we pair the STT with ElevenLabs for synthesis. (This TTS observation is qualitative; the benchmark held the TTS constant and did not measure it.)</p>
+
+    <h2>5.&nbsp;&nbsp;Conclusion</h2>
+    <div class="callout">
+      <div class="lab">&#127942;&nbsp;Primary recommendation</div>
+      <div class="pick">Deepgram Nova-3 (STT) + ElevenLabs Flash v2.5 (TTS)</div>
+      <p>Deepgram's STT ties for the best first-try number accuracy (70%) with zero permanent number losses and zero hallucination, yet runs at roughly half the latency of the slowest accurate engine, and captured the hard name once (fewer than AssemblyAI's three, more than Speechmatics' zero). It delivers accuracy, reliability, and speed in one engine, paired with ElevenLabs because Deepgram's own Aura TTS interrupted on the line.</p>
     </div>
-  </div>
-</section>
+    <ul>
+      <li><b>Deepgram Nova-3</b> &mdash; primary STT. Tied-best numbers, fast, stable, zero hallucination.</li>
+      <li><b>AssemblyAI Universal-3 Pro</b> &mdash; runner-up; best proper-noun accuracy (three exact hard-name captures).</li>
+      <li><b>Speechmatics Ursa (Enhanced)</b> &mdash; accuracy alternative; ties on numbers with the cleanest digit formatting but runs ~2&times; slower with no name advantage.</li>
+      <li><b>ElevenLabs Scribe v2</b> &mdash; middle of the pack; zero hallucination, low latency, 50% first-try.</li>
+      <li><b>Cartesia Ink-Whisper</b> &mdash; disqualified for telephony; fastest median, but nine hallucinations and a 2&nbsp;s tail.</li>
+    </ul>
 
-<section>
-  <div class="wrap">
-    <h2>The thesis</h2>
-    <ol class="thesis">
-      <li><strong>Speed ≠ accuracy.</strong> Cartesia had the fastest median yet was the least reliable (9 hallucinated tokens, a 2-second p95 tail). Raw speed tells you nothing about correctness.</li>
-      <li><strong>You don't have to trade speed for accuracy.</strong> Deepgram matches the most accurate engine on numbers while running twice as fast, so the slow engine's latency buys no accuracy advantage.</li>
-      <li><strong>Reliability spans the whole stack.</strong> A voice agent must never hallucinate, must capture names and numbers on a noisy 8&nbsp;kHz line, and must not cut the caller off — a turn-taking property that can live in the <em>text-to-speech</em> layer as much as anywhere else.</li>
-    </ol>
-  </div>
-</section>
+    <h2>6.&nbsp;&nbsp;Threats to Validity</h2>
+    <p>This is a <b>practical engineering benchmark, not a published academic study</b>. The sample is a single speaker (one voice, accent, microphone, and handset) with roughly ten calls per engine, so a 70% vs 66% gap is about one call. There is no ground-truth Word Error Rate; the &ldquo;AI read-back&rdquo; accuracy proxy mixes the STT with the language model, and the turn-detection timing that decides whether a confirmation registers. The TTS-interruption finding is a qualitative field observation, not a measured result. Treat the rankings as <b>directional</b>; the patterns are strong but the magnitudes are small-sample.</p>
 
-<section>
-  <div class="wrap">
-    <h2>How it was measured</h2>
-    <p>One Pipecat pipeline, one component swapped (the STT). Turn-taking (a local end-of-turn model over Silero VAD), the LLM (Claude Haiku 4.5), the TTS (ElevenLabs Flash v2.5), and the 8&nbsp;kHz → 16&nbsp;kHz audio path were held identical across all five engines. No vocabulary seeding. Latency was instrumented per service (time-to-first-token); number accuracy was scored from the assistant's spoken <strong>read-back</strong> of the caller's number; ground truth confirmed each batch ran its labelled engine.</p>
-    <h3>Honest limitations</h3>
-    <p class="note">This is a <strong>practical engineering benchmark, not a published academic study</strong>. Single speaker (one voice, accent, microphone, handset), ~10 calls per engine, no ground-truth Word Error Rate, and an "AI read-back" accuracy proxy that mixes the STT with the language model. The TTS-interruption finding is a qualitative field observation, not a measured result. Treat the rankings as <strong>directional</strong> — a 70% vs 66% gap here is roughly one call.</p>
-  </div>
-</section>
+    <h2>References</h2>
+    <div class="refs">
+      <ol>
+        <li>Pipecat &mdash; open-source framework for real-time voice and multimodal AI. <a href="https://pipecat.ai">pipecat.ai</a></li>
+        <li>Twilio Media Streams &mdash; real-time telephony audio over WebSocket. <a href="https://twilio.com">twilio.com</a></li>
+        <li>Deepgram Nova-3, AssemblyAI Universal-3 Pro, Speechmatics Ursa, ElevenLabs Scribe v2 &amp; Flash v2.5, Cartesia Ink-Whisper &mdash; vendor documentation.</li>
+      </ol>
+    </div>
 
-<section>
-  <div class="wrap">
-    <h2>Citation</h2>
-<pre>@techreport{telephony_stt_benchmark_2026,
-  title  = {The Best Speech-to-Text Engine for AI Voice Agents on the Telephony Layer},
-  author = {{MM Intelligence Voice Research}},
+    <pre class="cite">@techreport{telephony_stt_benchmark_2026,
+  title  = {The Best Speech-to-Text Engine for AI Voice
+            Agents on the Telephony Layer},
+  author = {Salim, Mazin and Palakuniyil, Mishahal},
+  institution = {MM Intelligence},
   year   = {2026},
-  note   = {A controlled comparison of five streaming STT engines in one identical PSTN pipeline},
-  url    = {https://github.com/therealmazin/telephony-stt-benchmark}
+  url = {https://github.com/therealmazin/telephony-stt-benchmark}
 }</pre>
-  </div>
-</section>
 
+  </div><!-- /body -->
+</div><!-- /sheet -->
 <footer>
-  <div class="wrap">
-    <p class="engines">Engines: Deepgram Nova-3 · ElevenLabs Scribe v2 Realtime · Speechmatics Ursa (Enhanced) · AssemblyAI Universal-3 Pro · Cartesia Ink-Whisper · Telephony via Twilio · Pipeline via Pipecat</p>
-    <p>Released under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · © 2026 MM Intelligence Voice Research</p>
-  </div>
+  &copy; 2026 MM Intelligence &nbsp;&bull;&nbsp; Released under <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a> &nbsp;&bull;&nbsp; Telephony via Twilio, pipeline via Pipecat
 </footer>
 </body>
 </html>

@@ -2,6 +2,8 @@
 
 **A controlled comparison of five streaming STT engines in one identical PSTN pipeline.**
 
+**Mazin Salim · Mishahal Palakuniyil** — MM Intelligence
+
 📄 **[Read the paper (PDF)](paper/telephony-stt-benchmark.pdf)**  ·  🌐 **[Project page](https://therealmazin.github.io/telephony-stt-benchmark/)**
 
 ---
@@ -28,7 +30,7 @@ Deepgram's STT ties for the **best first-try number accuracy (70%)** with **zero
 | **ElevenLabs Scribe v2** | 0.345 s | 50% | 1 | **0** | Middle of the pack |
 | **Cartesia Ink-Whisper** | 0.296 s | 20% | 1 | **9** | ❌ Disqualified (hallucinates) |
 
-![Speed does not predict accuracy](docs/figures/fig-scatter.png)
+![Speed does not predict accuracy](docs/figures/fig3.png)
 
 *The fastest engine (Cartesia) is the least accurate; the slowest (Speechmatics) is accurate but pays ~2× latency. Deepgram occupies the sweet spot: fast **and** accurate.*
 
@@ -51,7 +53,8 @@ This is a **practical engineering benchmark, not a published academic study**. S
 ```bibtex
 @techreport{telephony_stt_benchmark_2026,
   title  = {The Best Speech-to-Text Engine for AI Voice Agents on the Telephony Layer},
-  author = {{MM Intelligence Voice Research}},
+  author = {Salim, Mazin and Palakuniyil, Mishahal},
+  institution = {MM Intelligence},
   year   = {2026},
   note   = {A controlled comparison of five streaming STT engines in one identical PSTN pipeline},
   url    = {https://github.com/therealmazin/telephony-stt-benchmark}
